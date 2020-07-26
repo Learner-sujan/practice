@@ -1,0 +1,113 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {{cookie_username}} </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <a href="https://icons8.com/icon/OWRPl8fxkRvG/edit"></a>
+    <link rel="stylesheet" href=" {% static 'css/style.css' %} ">
+</head>
+<body>
+    <div>
+        <h1>Welcome {{cookie_username}}</h1>
+    </div>
+    <nav class="navbar navbar-expand-md bg-info navbar-dark">
+        <a href="{% url 'home' %}" class="navbar-brand">Birthday Recorder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="{% url "add" %}" class="nav-link">Add</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="logout" class="nav-link">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item mr-sm-5">
+                    <a href="login" class="nav-link">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+            <form action="" class="form-inline">
+                <input type="text" class="form-control mr-sm-2 " placeholder="Search">
+                <button type="submit" class="btn btn-warning">Search</button>
+            </form>
+            <ul>
+                <li class="float-left ml-5 pl-5"> {{date}} </li>
+            </ul>
+        </div>
+    </nav>
+{% block bodyblock %}
+    <div class="mt-5 container">
+    {% if posts %}
+        <table class="table table-bordered table-striped">
+            <thead class="text-center">
+                <th>SN</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone Number</th>
+                <th>Date of Birth</th>
+                <th>Action</th>
+            </thead>
+        {% for post in posts %}
+            <tbody>
+                <tr>
+                    <td class="text-center"> {{ forloop.counter }} </td>
+                    <td><a href="details/{{post.Uid}}">{{ post.Name }}</a>  </td>
+                    <td> {{ post.Address }} </td>
+                    <td class="text-center"> {{ post.Phone }} </td>
+                    <td class="text-center"> {{ post.Dob }} </td>
+                    <td >
+                        <a href="/edit/{{ post.Uid }}"><img src="https://img.icons8.com/fluent/30/000000/edit.png"/></a>
+                        <a href="/delete/{{ post.Uid }}"><img src="{% static 'icons/icon_delete.png' %}" alt="not found"></a>
+                    </td>
+                </tr>
+            </tbody>
+        {% endfor %}
+        </table>
+    {% else %}
+    <h2 class="text-center font-weight-bold">No records found</h2>         
+    {% endif %}
+    
+
+    {% if posts.has_other_pages %}
+    <ul class="pagination justify-content-center">
+      {% if posts.has_previous %}
+        <li class='page-item'><a href="?page={{ posts.previous_page_number }}" class="page-link">&laquo;</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+      {% endif %}
+      {% for i in posts.paginator.page_range %}
+        {% if posts.number == i %}
+          <li class="page=item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+          <li class='page-item'><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if posts.has_next %}
+        <li class='page-item'><a href="?page={{ posts.next_page_number }}" class="page-link">&raquo;</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  
+
+    <div class="text-center">
+        <a href="add" class="btn btn-dark btn-lg col-lg-3">Add new records</a> 
+    </div>
+    </div>
+{% endblock %}
+
+</body>
+</html>

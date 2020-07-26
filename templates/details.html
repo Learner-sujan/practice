@@ -1,0 +1,53 @@
+{% extends 'home.html' %}
+
+{% load static %}
+
+{% block bodyblock %}
+
+<div class="container">
+    <h2 class="mt-5 text-center text-success font-weight-bold">WELCOME {{NAME}} </h2>
+    <div class="row no-gutters">
+      <div class="col-2 ">
+        {% for x in detail %}
+        <section>
+          {% if x.Profile == None or x.Profile == '' %}
+          <img src="" alt="" class="rounded-circle pp">
+          {% else %}
+            <img src="{{x.Profile.url}}" class="rounded-circle pp" alt="{{x.Profile}}">
+          {% endif %}
+            <form action='profile/{{id}}' method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div id="upload">
+                    {{ form.Profile }}
+                    <input type="image" src="https://img.icons8.com/cute-clipart/40/000000/upload.png" alt="Upload" id="upload-btn">
+                </div>
+            </form>
+        </section>    
+      </div>
+      <div class="col-6 ml-5">
+        <ul class="text-center font-weight-bold details">
+            <li><img src="https://img.icons8.com/color/40/000000/address.png" class="pr-5" />{{x.Address}}</li>
+            <li><img src="https://img.icons8.com/fluent/40/000000/phone.png" class="pr-5"/>{{x.Phone}}</li>
+            <li><img src="https://img.icons8.com/dusk/40/000000/age.png" class="pr-5"/>{{x.Dob}}</li>
+            <li>
+              AGE :
+              {% if year > 1 and  month > 1 %}
+              {{year}} Years {{month}} Months  {{day}} Days 
+              {% elif year > 1 and month  < 1  %}
+              {{year}} Year {{month}} Month  {{day}} Days 
+              {% elif year == 1 and month  > 1  %}
+              {{year}} Year {{month}} Months  {{day}} Days 
+              {% else %}
+              {{year}} Year {{month}} Month  {{day}} Days 
+              {% endif %}
+            </li>
+        </ul>
+        {% endfor %}
+      </div>
+      <div class="col-3">
+        One of three columns
+      </div>
+    </div>
+</div>
+
+{% endblock %}
